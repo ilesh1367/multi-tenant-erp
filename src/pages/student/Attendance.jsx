@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import MainLayout from "../../layouts/MainLayout";
-import {
-  getStudentAttendanceRecords,
-  getAcademicYear,
-} from "../../services/studentAPIs";
+import { useStudent } from "../../context/StudentProvider";
 import {
   calculateAttendance,
   calculateMonthlyTrends,
@@ -12,62 +9,38 @@ import {
 } from "../../utils/calculations";
 
 export default function Attendance() {
+  const {attendanceRecords: records, academic, loading} = useStudent();
+
   const getDaysInMonth = (year, month) =>
     new Date(year, month + 1, 0).getDate();
-
-  const [records, setRecords] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [attendanceMap, setAttendanceMap] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
+
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
+
+  const attendanceMap = useMemo(() => {
+    if(!records || !Array.isArray(records)) return {};
+    return records.reduce((acc, record) => {
+      const dateKey = new Date(record.date).toISOString().split('T')[0];
+      acc[dateKey] = record;
+      return acc;
+    }, {})
+  }, [records]);
+
+  if (loading) return <MainLayout title="Attendance">Loading...</MainLayout>
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const daysCount = getDaysInMonth(year, month);
   const days = Array.from({ length: daysCount }, (_, i) => i + 1);
   const monthWord = getMonthName(month);
 
-  const [academicYears, setAcademicYears] = useState([]);
-  const [subjects, setSubjects] = useState([]);
-  const [selectedYear, setSelectedYear] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("");
-
-  useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        const studentId = JSON.parse(localStorage.getItem("user_data")).profiles
-          .student.id;
-        const data = await getStudentAttendanceRecords(studentId);
-        const academic = await getAcademicYear();
-        setAcademicYears(academic.years);
-        setSubjects(academic.subs);
-        console.log("academic ", academic);
-        setRecords(data);
-      } catch (err) {
-        console.error("Error fetching attendance.", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAttendance();
-  }, []);
-
-  useEffect(() => {
-    if (records && Array.isArray(records)) {
-      const map = records.reduce((acc, record) => {
-        const dateKey = new Date(record.date).toISOString().split("T")[0];
-        acc[dateKey] = record;
-        return acc;
-      }, {});
-      setAttendanceMap(map);
-    }
-    console.log(attendanceMap);
-  }, [records]);
-
-  if (loading) return <div>Loading Attendance</div>;
+  const academicYears = academic?.years || [];
+  const subjects = academic?.subs || [];
 
   const attendance = calculateAttendance(records);
-  const trends = records ? calculateMonthlyTrends(records) : [0, 0, 0, 0, 0, 0];
+  const trends = records && records.length > 0 ? calculateMonthlyTrends(records) : [0, 0, 0, 0, 0, 0];
   const monthLabels = getPastSixMonths();
-  console.log("month label", monthLabels)
 
   return (
     <MainLayout title="Attendance">

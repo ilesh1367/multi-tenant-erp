@@ -1,45 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MainLayout from "../../layouts/MainLayout";
-import {
-  getStudentDashboardData,
-  getStudentProfile,
-} from "../../services/studentAPIs";
 import { calculateAttendance, calculateGPA } from "../../utils/calculations";
+import { useStudent } from "../../context/StudentProvider";
 
 export default function Dashboard() {
-  const [student, setStudent] = useState(null);
-  const [studentData, setStudentData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const {profile: student, dashboard: studentData, loading} = useStudent();
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const userData = JSON.parse(localStorage.getItem("user_data"));
-        const studentId = userData?.profiles?.student?.id;
-        if (studentId) {
-          const data = await getStudentProfile(studentId);
-          setStudent(data);
-        }
-        const data = await getStudentDashboardData(studentId);
-        setStudentData(data);
-      } catch (err) {
-        console.error("Failed to fetch data", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, []);
-
-  if (loading || !studentData || !student) {
-    return (
-      <MainLayout>
-        <div>Loading your academic data...</div>
-      </MainLayout>
-    );
+  if(loading || !studentData || !student){
+    return <MainLayout> <div>Loading your academic data...</div></MainLayout>
   }
-
+  
   const attendance = studentData?.attendance?.results || [];
   const attendanceRate = calculateAttendance(attendance);
   const grades = studentData?.grades?.results || [];

@@ -11,7 +11,6 @@ export const getStudentDashboardData = async (studentId) => {
     api.get(`/operations/grades/?student=${studentId}`),
     api.get(`/operations/exams/?student=${studentId}`),
   ]);
-
   return {
     attendance: attendanceRes.data,
     grades: gradesRes.data,
@@ -20,19 +19,44 @@ export const getStudentDashboardData = async (studentId) => {
 };
 
 export const getStudentAttendanceRecords = async (studentId) => {
-  const response = await api.get(`/operations/attendance/?student=${studentId}`,);
+  const response = await api.get(`/operations/attendance/?student=${studentId}`);
   return response.data.results;
 };
 
-export const getAcademicYear = async (studentId) => {
+export const getAcademicYear = async () => {
   const [years, subs] = await Promise.all([
     api.get(`academics/academic-years/`),
     api.get(`academics/subjects/`),
   ]);
-
   return {
     years: years.data.results,
-    subs: subs.data.results
-  }
-  
-}
+    subs: subs.data.results,
+  };
+};
+
+export const getAssignments = async () => {
+  const response = await api.get(`/operations/assignments`);
+  return response.data.results;
+};
+
+export const getSubmissions = async () => {
+  const response = await api.get(`/operations/submissions/`);
+  return response.data.results;
+};
+
+export const submitAssignment = async (formData) => {
+  const response = await api.post(`/operations/submissions/`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+};
+
+export const getStudentEnrollment = async (studentId) => {
+  const response = await api.get(`/academics/enrollments/?student=${studentId}`);
+  return response.data.results?.length > 0 ? response.data.results[0] : null;
+};
+
+export const getStudentParents = async () => {
+  const response = await api.get(`/profiles/parent-student-mappings/`);
+  return response.data.results;
+};
