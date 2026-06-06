@@ -155,13 +155,13 @@ return(
 <Route path="/school-admin/create-class" element={<CreateClass />} />
 
 <Route path="/school-admin/academic-years" element={<AcademicYears />} />
-<Route path="/school-admin/academic-years/create" element={<CreateAcademicYear />} />
+<Route path="/school-admin/create-academic-year" element={<CreateAcademicYear />} />
 
 <Route path="/school-admin/roles" element={<RolesPermissions />} />
-<Route path="/school-admin/roles/create" element={<CreateRole />} />
+<Route path="/school-admin/create-role" element={<CreateRole />} />
 
 <Route path="/school-admin/students" element={<Students/>} />
-<Route path="/school-admin/students/add" element={<AddStudent/>} />
+<Route path="/school-admin/add-student" element={<AddStudent/>} />
 
 <Route path="/school-admin/teachers" element={<Teachers/>} />
 <Route path="/school-admin/teachers/create" element={<AddTeacher/>} />
