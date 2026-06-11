@@ -397,3 +397,36 @@ export const generatePresentationOutline = (payload) =>
   callAiApi("/api/v1/generate_presentation_outline", payload);
 export const generateRubric = (payload) =>
   callAiApi("/api/v1/generate_rubric", payload);
+
+// --- Saved AI Content APIs ---
+
+export const getSavedAIContent = (params = {}) => {
+  let endpoint = "/api/v1/academics/saved-ai-content/";
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value) query.append(key, value);
+  }
+  const qStr = query.toString();
+  if (qStr) endpoint += `?${qStr}`;
+  return fetchAllPages(endpoint);
+};
+
+export const getSavedAIContentById = (id) =>
+  apiCall(`/api/v1/academics/saved-ai-content/${id}/`);
+
+export const saveAIContent = (payload) =>
+  apiCall("/api/v1/academics/saved-ai-content/", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+export const updateSavedAIContent = (id, payload) =>
+  apiCall(`/api/v1/academics/saved-ai-content/${id}/`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+
+export const deleteSavedAIContent = (id) =>
+  apiCall(`/api/v1/academics/saved-ai-content/${id}/`, {
+    method: "DELETE",
+  });
