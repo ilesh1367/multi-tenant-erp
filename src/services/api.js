@@ -255,7 +255,7 @@ export const getExam = (id) => apiCall(`/api/v1/operations/exams/${id}/`);
  * Generic AI API caller – no hardcoded fallback
  */
 const callAiApi = async (endpoint, payload) => {
-  const AI_API_BASE_URL = process.env.REACT_APP_AI_API_URL;   // Removed hardcoded fallback
+  const AI_API_BASE_URL = process.env.REACT_APP_AI_API_URL; // Removed hardcoded fallback
   const url = `${AI_API_BASE_URL}${endpoint}`;
 
   const token = localStorage.getItem("access_token");
