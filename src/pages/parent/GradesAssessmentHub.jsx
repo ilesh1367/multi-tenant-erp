@@ -51,33 +51,33 @@ function GradesSkeleton() {
 }
 
 /* ─── Grade helpers ─────────────────────────────────────────────────────── */
+// NOTE: Letter grades intentionally have NO minus suffix (A, B, C — not A-, B-, C-)
+// to match the student panel's GradeCard.jsx exactly, so both views agree.
 const GRADE_COLORS = {
-  A:  { bg: "bg-green-100",  text: "text-green-700"  },
-  B:  { bg: "bg-blue-100",   text: "text-blue-700"   },
-  C:  { bg: "bg-yellow-100", text: "text-yellow-700" },
-  D:  { bg: "bg-orange-100", text: "text-orange-700" },
-  F:  { bg: "bg-red-100",    text: "text-red-700"    },
+  "A+": { bg: "bg-green-100",  text: "text-green-700"  },
+  A:    { bg: "bg-blue-100",   text: "text-blue-700"   },
+  "B+": { bg: "bg-yellow-100", text: "text-yellow-700" },
+  B:    { bg: "bg-orange-100", text: "text-orange-700" },
+  C:    { bg: "bg-red-100",    text: "text-red-700"    },
 };
 
 function gradeColor(grade = "") {
-  const letter = grade.toUpperCase().charAt(0);
-  return GRADE_COLORS[letter] || { bg: "bg-slate-100", text: "text-slate-600" };
+  return GRADE_COLORS[grade] || { bg: "bg-slate-100", text: "text-slate-600" };
 }
 
-// Convert numeric score to letter grade
+// Convert numeric score to letter grade — same thresholds as student panel's
+// GradeCard.jsx getGradeDetails(), so a subject shows the identical letter
+// whether viewed from the student or parent panel.
 function scoreToGrade(score, maxScore) {
-  if (!score || !maxScore) return "N/A";
-  const pct = (score / maxScore) * 100;
-  if (pct >= 90) return "A";
-  if (pct >= 80) return "A-";
-  if (pct >= 75) return "B+";
-  if (pct >= 70) return "B";
-  if (pct >= 65) return "B-";
-  if (pct >= 60) return "C+";
-  if (pct >= 55) return "C";
-  if (pct >= 50) return "C-";
-  if (pct >= 40) return "D";
-  return "F";
+  const obtained = parseFloat(score);
+  const max = parseFloat(maxScore);
+  if (isNaN(obtained) || isNaN(max) || max === 0) return "N/A";
+  const pct = (obtained / max) * 100;
+  if (pct >= 90) return "A+";
+  if (pct >= 80) return "A";
+  if (pct >= 70) return "B+";
+  if (pct >= 60) return "B";
+  return "C";
 }
 
 // Subject icon map
@@ -112,8 +112,8 @@ function handleDownloadPDF(studentName, grades) {
     <tr>
       <td>${g.subjectName}</td>
       <td>${g.marks_obtained ?? "—"} / ${g.max_marks ?? "—"}</td>
-      <td>${g.grade || scoreToGrade(g.marks_obtained, g.max_marks)}</td>
-      <td>${g.remarks || "—"}</td>
+      <td>${g.grade}</td>
+      <td>${g.remarks || "No remarks provided."}</td>
     </tr>
   `).join("");
 
@@ -143,9 +143,9 @@ function handleDownloadPDF(studentName, grades) {
 
 /* ─── Circular progress ─────────────────────────────────────────────────── */
 function CircularGrade({ grade, gpa, topPercent }) {
-  // Map letter grade to arc fill
-  const gradeMap = { "A+":100,"A":95,"A-":90,"B+":85,"B":80,"B-":75,"C+":70,"C":65,"C-":60,"D":50,"F":30 };
-  const pct = gradeMap[grade] || 70;
+  // Map letter grade to arc fill — matches the no-minus grade scale above.
+  const gradeMap = { "A+": 100, A: 85, "B+": 75, B: 65, C: 50, "N/A": 0 };
+  const pct = gradeMap[grade] ?? 70;
   const r = 70;
   const circ = 2 * Math.PI * r;
   const offset = circ - (pct / 100) * circ;
@@ -182,24 +182,22 @@ export default function GradesAssessmentHub() {
   const { profile, dashboard, enrollment, loading, error } = useParent();
   const [activeTab, setActiveTab] = useState("all");
 
-  /* ── Process grades from dashboard.grades ── */
+  /* ── Process grades from dashboard.grades ──
+     Always recompute the letter grade from marks ourselves (never trust a
+     possibly-missing g.grade field from the backend) so every subject —
+     including Mathematics — gets a consistent grade + remarks fallback. */
   const allGrades = useMemo(() => {
     const raw = dashboard?.grades?.results || dashboard?.grades || [];
     if (!Array.isArray(raw)) return [];
     return raw.map((g) => ({
       ...g,
       subjectName: g.subject_name || g.subject?.name || "Unknown Subject",
-      grade: g.grade || scoreToGrade(g.marks_obtained, g.max_marks),
+      grade: scoreToGrade(g.marks_obtained, g.max_marks),
+      remarks: g.remarks && g.remarks.trim() ? g.remarks : "No remarks provided.",
     }));
   }, [dashboard]);
 
   /* ── Exam list for tab filter ── */
-  const exams = useMemo(() => {
-    const raw = dashboard?.exams?.results || dashboard?.exams || [];
-    if (!Array.isArray(raw)) return [];
-    return raw;
-  }, [dashboard]);
-
   const examOptions = useMemo(() => {
     const names = [...new Set(allGrades.map(g => g.exam_name || g.exam?.name).filter(Boolean))];
     return names;
@@ -213,9 +211,12 @@ export default function GradesAssessmentHub() {
   /* ── Compute overall grade ── */
   const overallStats = useMemo(() => {
     if (!allGrades.length) return { grade: "—", avgPct: 0 };
-    const withScores = allGrades.filter(g => g.marks_obtained && g.max_marks);
+    const withScores = allGrades.filter(g => g.marks_obtained != null && g.max_marks != null);
     if (!withScores.length) return { grade: "—", avgPct: 0 };
-    const totalPct = withScores.reduce((sum, g) => sum + (g.marks_obtained / g.max_marks) * 100, 0);
+    const totalPct = withScores.reduce(
+      (sum, g) => sum + (parseFloat(g.marks_obtained) / parseFloat(g.max_marks)) * 100,
+      0
+    );
     const avgPct = totalPct / withScores.length;
     const grade = scoreToGrade(avgPct, 100);
     const gpa = (avgPct / 100 * 4).toFixed(1);
@@ -224,9 +225,11 @@ export default function GradesAssessmentHub() {
 
   /* ── Best & weakest subject ── */
   const { best, weakest } = useMemo(() => {
-    const withScores = allGrades.filter(g => g.marks_obtained && g.max_marks);
+    const withScores = allGrades.filter(g => g.marks_obtained != null && g.max_marks != null);
     if (!withScores.length) return { best: null, weakest: null };
-    const sorted = [...withScores].sort((a, b) => (b.marks_obtained / b.max_marks) - (a.marks_obtained / a.max_marks));
+    const sorted = [...withScores].sort(
+      (a, b) => (parseFloat(b.marks_obtained) / parseFloat(b.max_marks)) - (parseFloat(a.marks_obtained) / parseFloat(a.max_marks))
+    );
     return { best: sorted[0], weakest: sorted[sorted.length - 1] };
   }, [allGrades]);
 
@@ -391,8 +394,8 @@ export default function GradesAssessmentHub() {
                     {filteredGrades.map((g, idx) => {
                       const style = subjectStyle(g.subjectName);
                       const gc    = gradeColor(g.grade);
-                      const pct   = g.marks_obtained && g.max_marks
-                        ? Math.round((g.marks_obtained / g.max_marks) * 100)
+                      const pct   = g.marks_obtained != null && g.max_marks != null
+                        ? Math.round((parseFloat(g.marks_obtained) / parseFloat(g.max_marks)) * 100)
                         : null;
                       const examName = g.exam_name || g.exam?.name || "—";
 
@@ -415,7 +418,7 @@ export default function GradesAssessmentHub() {
                               {g.grade}
                             </span>
                           </td>
-                          <td className="px-5 py-4 text-xs text-on-surface-variant italic">{g.remarks || "—"}</td>
+                          <td className="px-5 py-4 text-xs text-on-surface-variant italic">{g.remarks}</td>
                           <td className="px-5 py-4 text-right">
                             {pct !== null ? (
                               <div className="flex items-center justify-end gap-2">
