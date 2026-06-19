@@ -10,6 +10,10 @@ export default function Sidebar() {
 
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMobile, setIsMobile]     = useState(false);
+  const userData = JSON.parse(localStorage.getItem('user_data') || 'null');
+  const parentData = userData?.identity;
+  const parentFirstName = parentData?.first_name || '';
+  const parentLastName = parentData?.last_name || '';
 
   // Desktop: restore the user's last saved collapse preference (survives page
   // navigation, since this component remounts on every route change).
@@ -164,7 +168,7 @@ export default function Sidebar() {
               alt="Profile"
             />
             <div className={`overflow-hidden transition-all duration-300 min-w-0 ${isExpanded ? "w-auto opacity-100" : "w-0 opacity-0"}`}>
-              <p className="font-bold text-sm text-slate-800 dark:text-slate-100 whitespace-nowrap">Alexander Pierce</p>
+              <p className="font-bold text-sm text-slate-800 dark:text-slate-100 whitespace-nowrap">{parentFirstName[0].toUpperCase() + parentFirstName.slice(1)} {parentLastName[0].toUpperCase() + parentLastName.slice(1)}</p>
               <p className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">Guardian ID: #8821</p>
             </div>
           </div>

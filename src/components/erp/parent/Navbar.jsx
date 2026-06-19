@@ -19,6 +19,10 @@ const Navbar = () => {
   const navigate  = useNavigate();
   const location  = useLocation();
 
+  const userData = JSON.parse(localStorage.getItem('user_data'))
+  const parentData = userData?.identity;
+  const parentFirstName = parentData && parentData.first_name;
+  const parentLastName = parentData && parentData.last_name;
   // Match current path — exact first, then prefix
   const pageName =
     PAGE_NAMES[location.pathname] ||
@@ -70,7 +74,7 @@ const Navbar = () => {
         {/* Name + divider — desktop only */}
         <div className="hidden md:flex items-center gap-4">
           <span className="text-sm font-medium text-blue-700 dark:text-blue-400">
-            Alexander Pierce
+            {parentFirstName[0].toUpperCase() + parentFirstName.slice(1)} {parentLastName[0].toUpperCase() + parentLastName.slice(1)}
           </span>
           <div className="h-8 w-px bg-slate-200 dark:bg-slate-700" />
         </div>
