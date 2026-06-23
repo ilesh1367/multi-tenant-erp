@@ -140,7 +140,7 @@ const ParentPortalSettings = () => {
   const [profilePicPreview, setProfilePicPreview] = useState(null);
   const fileInputRef                        = useRef(null);
 
-  useEffect(() => {
+useEffect(() => {
     const fetchProfile = async () => {
       try {
         const profileData = await getParentProfile();
@@ -152,7 +152,18 @@ const ParentPortalSettings = () => {
         setOccupation(profileData.occupation || "");
         setEmergencyContact(profileData.emergency_contact_number || "");
         setDob(profileData.date_of_birth || "");
-        setProfilePicUrl(profileData.profile_picture || null);
+
+        // Get signed URL if profile picture exists
+        if (profileData.profile_picture) {
+          try {
+            const picRes = await api.get(`/profiles/me/picture/?profile_type=parent`);
+            if (picRes.data.has_picture) {
+              setProfilePicUrl(picRes.data.url);
+            }
+          } catch {
+            setProfilePicUrl(null);
+          }
+        }
       } catch (err) {
         console.error("Couldn't fetch parent profile", err);
       }
@@ -167,51 +178,63 @@ const ParentPortalSettings = () => {
     setProfilePicPreview(URL.createObjectURL(file));
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    setSaveError(null);
-    try {
-      const userData = JSON.parse(localStorage.getItem("user_data") || "null");
-      const userId = userData?.identity?.id || null;
+const handleSave = async () => {
+  setSaving(true);
+  setSaveError(null);
+  try {
+    const userData = JSON.parse(localStorage.getItem("user_data") || "null");
+    const userId = userData?.identity?.id || null;
 
-      // Use FormData if there's a new profile picture
-      if (profilePicFile) {
-        const formData = new FormData();
-        formData.append("user", userId);
-        formData.append("phone_number", phone);
-        formData.append("address", address);
-        formData.append("occupation", occupation);
-        formData.append("emergency_contact_number", emergencyContact);
-        if (dob) formData.append("date_of_birth", dob);
-        formData.append("profile_picture", profilePicFile);
+    let newFilePath = null;
 
-        await api.patch(`/profiles/parents/me/`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      } else {
-        const payload = {
-          user: userId,
-          phone_number: phone,
-          address,
-          occupation,
-          emergency_contact_number: emergencyContact,
-        };
-        if (dob) payload.date_of_birth = dob;
-        await api.patch(`/profiles/parents/me/`, payload);
-      }
+    // Upload profile picture
+    if (profilePicFile) {
+      const urlRes = await api.post(`/uploads/profile-image/`, {
+        file_name: profilePicFile.name,
+        content_type: profilePicFile.type,
+        profile_type: "parent",
+      });
 
-      setSaved(true);
+      const { upload_url, file_path } = urlRes.data;
+
+      await fetch(upload_url, {
+        method: "PUT",
+        body: profilePicFile,
+        headers: { "Content-Type": profilePicFile.type },
+      });
+
+      await api.post(`/uploads/confirm/`, {
+        file_path,
+        file_type: "profile_picture",
+      });
+
+      newFilePath = file_path; // save for profile update
       setProfilePicFile(null);
-      setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      console.error("Save failed", err);
-      setSaveError("Failed to save. Please try again.");
-      setTimeout(() => setSaveError(null), 3000);
-    } finally {
-      setSaving(false);
     }
-  };
 
+    // Save profile data — include profile_picture if uploaded
+    const payload = {
+      user: userId,
+      phone_number: phone,
+      address,
+      occupation,
+      emergency_contact_number: emergencyContact,
+    };
+    if (dob) payload.date_of_birth = dob;
+    if (newFilePath) payload.profile_picture = newFilePath; // ← this is the fix
+
+    await api.patch(`/profiles/parents/me/`, payload);
+
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  } catch (err) {
+    console.error("Save failed", err);
+    setSaveError("Failed to save. Please try again.");
+    setTimeout(() => setSaveError(null), 3000);
+  } finally {
+    setSaving(false);
+  }
+};
   const avatarSrc =
     profilePicPreview ||
     profilePicUrl ||
@@ -246,10 +269,10 @@ const ParentPortalSettings = () => {
           {/* ── Account Profile ── */}
           <section className="xl:col-span-7 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 flex flex-col transition-colors duration-300">
 
-            <div className="flex items-center gap-2 mb-4">
+            {/* <div className="flex items-center gap-2 mb-4">
               <span className="p-1.5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 rounded-lg material-symbols-outlined text-base">person</span>
               <h2 className="text-sm font-bold text-slate-800 dark:text-white">Account Profile</h2>
-            </div>
+            </div> */}
 
             {/* Profile picture */}
             <div className="flex items-center gap-4 mb-4">

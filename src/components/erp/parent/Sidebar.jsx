@@ -6,13 +6,31 @@ import { NavLink, useNavigate } from "react-router-dom";
 export default function Sidebar({ isExpanded, isMobile, onToggle, onClose }) {
   const navigate = useNavigate();
 
-  // Get parent data from localStorage with safety checks
+  // ── Avatar state ──
+  const [avatarUrl, setAvatarUrl] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchPic = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const res = await fetch("http://localhost:8000/api/v1/profiles/me/picture/?profile_type=parent", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.has_picture) setAvatarUrl(data.url);
+      } catch {
+        setAvatarUrl(null);
+      }
+    };
+    fetchPic();
+  }, []);
+
+  // Get parent data from localStorage
   const userData = JSON.parse(localStorage.getItem('user_data') || 'null');
   const parentData = userData?.identity;
   const parentFirstName = parentData?.first_name || '';
   const parentLastName = parentData?.last_name || '';
 
-  // Format name safely
   const formattedFirstName = parentFirstName
     ? parentFirstName[0].toUpperCase() + parentFirstName.slice(1)
     : 'Guardian';
@@ -46,13 +64,8 @@ export default function Sidebar({ isExpanded, isMobile, onToggle, onClose }) {
 
   return (
     <>
-      {/* Mobile backdrop */}
       {isMobile && isExpanded && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40"
-          onClick={onClose}
-          aria-hidden="true"
-        />
+        <div className="fixed inset-0 bg-black/50 z-40" onClick={onClose} aria-hidden="true" />
       )}
 
       <aside
@@ -77,19 +90,15 @@ export default function Sidebar({ isExpanded, isMobile, onToggle, onClose }) {
             {isMobile ? (
               <button
                 onClick={onClose}
-                className="w-9 h-9 flex items-center justify-center rounded-xl
-                           hover:bg-white/60 dark:hover:bg-slate-800 transition-colors flex-shrink-0"
+                className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-white/60 dark:hover:bg-slate-800 transition-colors flex-shrink-0"
                 aria-label="Close sidebar"
               >
-                <span className="material-symbols-outlined text-blue-800 dark:text-blue-300 text-xl">
-                  close
-                </span>
+                <span className="material-symbols-outlined text-blue-800 dark:text-blue-300 text-xl">close</span>
               </button>
             ) : (
               <button
                 onClick={onToggle}
-                className="w-9 h-9 flex items-center justify-center rounded-xl
-                           hover:bg-white/60 dark:hover:bg-slate-800 transition-colors flex-shrink-0"
+                className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-white/60 dark:hover:bg-slate-800 transition-colors flex-shrink-0"
                 aria-label="Toggle sidebar"
               >
                 <span className="material-symbols-outlined text-blue-800 dark:text-blue-300 text-xl">
@@ -108,7 +117,10 @@ export default function Sidebar({ isExpanded, isMobile, onToggle, onClose }) {
           <div className={`flex items-center mb-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex-shrink-0
                            ${isExpanded ? "gap-3 px-3 py-3" : "justify-center p-2"}`}>
             <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP3jfyRT4iY4LkdJUOnHyneVusf_7ngMcO-5-pONgEQ9smtNxpcbzzzEuo-76ZHnBeHODjFa2U1W5Gf-VGwfpJxXUj8VKwgRVk8dO_kl5i1y0Oc4ATMcaGD5c9FWu3GU5CRDdajVDtt2gybsx8YbTxY5trcbY0I4CGR90lpMvhqtJig81tkqqgqvlqjE3mghurDnFqga2HYCmlN1UuMj0aMb--GYL_T2ky-vdJShDA0reevT0Zoc2gcjVt1VwsCqbh5ZSnPOBcrw"
+              src={
+                avatarUrl ||
+                `https://ui-avatars.com/api/?name=${encodeURIComponent(`${formattedFirstName} ${formattedLastName}`.trim() || "P")}&background=3b82f6&color=fff`
+              }
               className="w-9 h-9 rounded-full object-cover flex-shrink-0"
               alt="Profile"
             />
@@ -120,17 +132,10 @@ export default function Sidebar({ isExpanded, isMobile, onToggle, onClose }) {
             </div>
           </div>
 
-          {/* ── Nav items — flex-1 fills middle, NO scroll ── */}
+          {/* ── Nav ── */}
           <nav className="flex flex-col flex-1 gap-0.5 overflow-hidden">
             {navItems.map(({ to, end, icon, label }) => (
-              <NavLink
-                key={label}
-                to={to}
-                end={end}
-                onClick={onClose}
-                title={!isExpanded ? label : undefined}
-                className={navClass}
-              >
+              <NavLink key={label} to={to} end={end} onClick={onClose} title={!isExpanded ? label : undefined} className={navClass}>
                 <span className="material-symbols-outlined flex-shrink-0 text-[20px]">{icon}</span>
                 <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${isExpanded ? "w-auto opacity-100" : "w-0 opacity-0"}`}>
                   {label}
@@ -139,17 +144,11 @@ export default function Sidebar({ isExpanded, isMobile, onToggle, onClose }) {
             ))}
           </nav>
 
-          {/* ── Divider ── */}
           <div className="my-2 border-t border-slate-200 dark:border-slate-700/60 flex-shrink-0" />
 
-          {/* ── Bottom: Settings + Logout ── */}
+          {/* ── Bottom ── */}
           <div className="flex flex-col gap-0.5 flex-shrink-0">
-            <NavLink
-              to="/parent/settings"
-              onClick={onClose}
-              title={!isExpanded ? "Settings" : undefined}
-              className={navClass}
-            >
+            <NavLink to="/parent/settings" onClick={onClose} title={!isExpanded ? "Settings" : undefined} className={navClass}>
               <span className="material-symbols-outlined flex-shrink-0 text-[20px]">settings</span>
               <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${isExpanded ? "w-auto opacity-100" : "w-0 opacity-0"}`}>
                 Settings
