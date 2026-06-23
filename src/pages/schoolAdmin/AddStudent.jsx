@@ -29,9 +29,12 @@ function AddStudentSkeleton() {
   return (
     <SchoolLayout>
       <div className="px-4 md:px-8 pt-4 pb-12 space-y-6 animate-pulse">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <Sk w={140} h={20} />
-          <div className="flex gap-2 w-full sm:w-auto"><Sk h={36} className="flex-1 sm:w-20" /><Sk h={36} className="flex-1 sm:w-32" /></div>
+        <div className="flex justify-between items-start gap-3">
+          <Sk w={50} h={20} />
+         <div className="flex gap-2">
+           <Sk w={50} h={20} />
+          <Sk w={100} h={20} />
+         </div>
         </div>
 
         <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/10 p-4 md:p-6">
@@ -169,36 +172,40 @@ export default function AddStudent() {
 
   // ── Submit ──
   const handleSave = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
 
-    try {
-      const userPayload = { email, password, first_name: firstName, last_name: lastName };
-      const userData = await schoolAdminApi.createUser(userPayload);
+  try {
+    const registrationPayload = {
+      email,
+      password,
+      first_name: firstName,
+      last_name: lastName,
+      enrollment_number: enrollmentNumber,
+      is_archived: false,
+      ...(dateOfBirth && { date_of_birth: dateOfBirth }),
+      ...(phoneNumber && { phone_number: phoneNumber }),
+      ...(bloodGroup && { blood_group: bloodGroup }),
+      ...(address && { address }),
+    };
 
-      if (userData.id) {
-        const profilePayload = { user: userData.id, enrollment_number: enrollmentNumber, is_archived: false };
-        if (dateOfBirth) profilePayload.date_of_birth = dateOfBirth;
-        if (phoneNumber) profilePayload.phone_number = phoneNumber;
-        if (bloodGroup) profilePayload.blood_group = bloodGroup;
-        if (address) profilePayload.address = address;
+  
+    const studentProfile = await schoolAdminApi.createStudentProfile(registrationPayload);
 
-        const studentProfile = await schoolAdminApi.createStudentProfile(profilePayload);
+    // Enroll the student if profile creation returned an ID and enrollment metrics are present
+    if (classLevel && academicYear && studentProfile?.id) {
+      await api.post(`academics/enrollments/`, {
+        student: studentProfile.id,
+        academic_year: academicYear,
+        class_level: classLevel,
+        section: section || null,
+      });
+    }
 
-        if (classLevel && academicYear && studentProfile?.id) {
-          await api.post(`academics/enrollments/`, {
-            student: studentProfile.id,
-            academic_year: academicYear,
-            class_level: classLevel,
-            section: section || null,
-          });
-        }
-      }
-
-      showToast("Student registered successfully!");
-      setTimeout(() => navigate("/school-admin/students"), 1000);
-    } catch (err) {
+    showToast("Student registered successfully!");
+    setTimeout(() => navigate("/school-admin/students"), 1000);
+  } catch (err) {
       if (err.response?.data) {
         const data = err.response.data;
         if (typeof data === "string" && data.includes("<!DOCTYPE")) {
@@ -236,14 +243,14 @@ export default function AddStudent() {
           )}
 
           {/* ── Action Navigation Bar Strip ── */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex justify-between items-center gap-4">
             <button
               type="button"
               onClick={() => navigate(fromQuickAdd ? "/school-admin" : "/school-admin/students")}
               className="flex items-center gap-1.5 text-primary text-xs md:text-sm font-bold hover:underline"
             >
               <span className="material-symbols-outlined text-base">arrow_back</span>
-              {fromQuickAdd ? "Back to Dashboard" : "Back to Directory"}
+              Back
             </button>
 
             <div className="flex gap-2 w-full sm:w-auto justify-end">

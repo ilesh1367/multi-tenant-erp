@@ -28,13 +28,13 @@ function Sk({ w, h, r = 6, style = {} }) {
 function AddMappingSkeleton() {
   return (
     <SchoolLayout>
-      <div className="px-4 md:px-8 pt-4 pb-12 space-y-6 animate-pulse mx-auto">
+      <div className="px-4 md:px-8 pt-4 pb-12 space-y-6 animate-pulse">
         {/* Top Bar Navigation Strip */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <Sk w={140} h={20} />
-          <div className="flex gap-2 w-full sm:w-auto">
-            <Sk h={36} className="flex-1 sm:w-20" />
-            <Sk h={36} className="flex-1 sm:w-32" />
+        <div className="flex justify-between items-center gap-3">
+          <Sk w={50} h={30} />
+          <div className="flex gap-2">
+            <Sk w={60} h={36}/>
+            <Sk w={130} h={36}/>
           </div>
         </div>
 
@@ -160,6 +160,7 @@ export default function AddMapping() {
     setError(null);
 
     try {
+      // FIXME: change the route from "profiles" to "school-admin" for post method
       await api.post(`profiles/parent-student-mappings/`, {
         parent: selectedParent,
         student: selectedStudent,
@@ -210,14 +211,14 @@ export default function AddMapping() {
           )}
 
           {/* ── Top Bar Action Navigation Strip ── */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex justify-between items-center gap-4">
             <button
               type="button"
               onClick={() => navigate("/school-admin/mapping")}
               className="flex items-center gap-1.5 text-primary text-xs md:text-sm font-bold hover:underline"
             >
               <span className="material-symbols-outlined text-base">arrow_back</span>
-              Back to Directory
+              Back
             </button>
 
             <div className="flex gap-2 w-full sm:w-auto justify-end">

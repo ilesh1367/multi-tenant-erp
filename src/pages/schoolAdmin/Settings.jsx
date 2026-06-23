@@ -47,7 +47,7 @@ function StatCard({ icon, label, value, accentColor }) {
       <div>
         <p className="text-[10px] font-bold uppercase tracking-wider mb-0.5"
           style={{ color: "var(--color-on-surface-variant)" }}>{label}</p>
-        <p className="text-xl font-headline font-black leading-none"
+        <p className="text-xs md:text-xl font-headline font-black leading-none"
           style={{ color: "var(--color-on-surface)" }}>{value}</p>
       </div>
     </div>
@@ -195,7 +195,7 @@ export default function Settings() {
   if (loading) {
     return (
       <SchoolLayout key={`layout-${renderKey}`}>
-        <div className="max-w-6xl mx-auto px-4 md:px-8 pt-4 pb-12">
+        <div className="px-4 md:px-8 pt-4 pb-12">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <Skeleton style={{ width: 240, height: 32 }} />
@@ -235,7 +235,7 @@ export default function Settings() {
 
   return (
     <SchoolLayout key={`layout-${renderKey}`}>
-      <div className="max-w-6xl mx-auto px-4 md:px-8 pt-4 pb-12 animate-in fade-in duration-300" key={`content-${renderKey}`}>
+      <div className="px-4 md:px-8 pt-4 pb-12 animate-in fade-in duration-300" key={`content-${renderKey}`}>
 
         {/* Toast Notification */}
         {toast && (
@@ -262,7 +262,7 @@ export default function Settings() {
         </div>
 
         {/* Overview Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-3 text-xs gap-4 mb-8">
           {stats.map((s, i) => (
             <StatCard key={i} icon={s.icon} label={s.label} value={s.value} accentColor={s.accentColor} />
           ))}

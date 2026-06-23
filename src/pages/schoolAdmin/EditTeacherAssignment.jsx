@@ -80,7 +80,9 @@ function PageSkeleton() {
             </div>
           </div>
           {/* Role badge */}
-          <Sk w={120} h={36} r={8} />
+          <div className="hidden md:block">
+            <Sk w={120} h={36} r={8} />
+          </div>
         </div>
       </div>
 
@@ -93,7 +95,7 @@ function PageSkeleton() {
           <Sk w={140} h={14} />
         </div>
         {/* Card body — 2-col grid */}
-        <div style={{ padding: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+        <div className="p-6 grid md:grid-cols-2 gap-6 ">
           {[0, 1, 2, 3].map((i) => (
             <div key={i}>
               <Sk w={90} h={10} mb={8} />
@@ -189,7 +191,7 @@ export default function EditTeacherAssignment() {
       setIsClassTeacher(assignData.is_class_teacher || false);
 
       const [teachersRes, subjectsRes, classLevelsRes, academicYearsRes] = await Promise.all([
-        api.get("/profiles/teachers/"),
+        api.get("/school-admin/teachers/"),
         api.get("/academics/subjects/"),
         api.get("/academics/class-levels/"),
         api.get("/academics/academic-years/"),
@@ -358,7 +360,7 @@ export default function EditTeacherAssignment() {
           <button onClick={() => navigate("/school-admin/teacher-assignment")}
             className="flex items-center gap-1.5 text-[#0058be] text-sm font-semibold hover:underline">
             <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-            Back to Directory
+            Back
           </button>
           <div className="flex gap-2">
             {!isEditing ? (
@@ -390,7 +392,7 @@ export default function EditTeacherAssignment() {
 
         {/* ── Identity Card ── */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between gap-4">
+          <div className={`${isEditing ? "flex-col" : "flex flex-col md:flex-row md:items-center justify-between gap-4"}`}>
             <div className="flex items-center gap-5">
               <div className="w-16 h-16 shrink-0 rounded-2xl bg-[#e5eeff] text-[#0058be] flex items-center justify-center font-bold text-xl border border-blue-100">
                 {initials}
@@ -424,9 +426,9 @@ export default function EditTeacherAssignment() {
               </div>
             </div>
 
-            <div className="shrink-0">
+            <div className={`${isEditing ? "ml-[84px]" : ""} shrink-0`}>
               {isEditing ? (
-                <label className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-200 bg-blue-50 cursor-pointer hover:bg-blue-100 transition-colors select-none">
+                <label className="flex items-center gap-2 px-4 py-2 rounded-lg border border-blue-200 bg-blue-50 cursor-pointer hover:bg-blue-100 transition-colors select-none mt-5">
                   <input type="checkbox" checked={isClassTeacher} onChange={() => setIsClassTeacher(!isClassTeacher)}
                     className="w-4 h-4 rounded text-[#0058be] focus:ring-[#0058be]/50 border-gray-300" />
                   <span className="text-sm font-bold text-[#0058be]">Class Teacher</span>
@@ -436,7 +438,7 @@ export default function EditTeacherAssignment() {
                   <span className="material-symbols-outlined text-[18px]">stars</span>Class Teacher
                 </span>
               ) : (
-                <span className="bg-green-50 text-green-700 border border-green-200 px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2">
+                <span className="bg-green-50 text-green-700 border border-green-200 px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 w-fit">
                   <span className="material-symbols-outlined text-[18px]">check_circle</span>Subject Teacher
                 </span>
               )}

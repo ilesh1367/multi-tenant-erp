@@ -233,7 +233,7 @@ export default function GuardianDetails() {
               onClick={() => navigate("/school-admin/parents")}
               className="mt-4 px-4 py-2 bg-[#0058be] text-white rounded-lg text-sm font-bold"
             >
-              Back to Directory
+              Back
             </button>
           </div>
         </div>
@@ -318,7 +318,7 @@ export default function GuardianDetails() {
             onClick={() => navigate("/school-admin/parents")}
             className="flex items-center gap-1.5 text-[#0058be] text-sm font-semibold hover:underline"
           >
-            <span className="material-symbols-outlined text-[18px]">arrow_back</span> Back to Directory
+            <span className="material-symbols-outlined text-[18px]">arrow_back</span> Back
           </button>
 
           <div className="flex gap-2">
@@ -360,7 +360,7 @@ export default function GuardianDetails() {
 
         {/* Identity Header Card */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between gap-4">
+          <div className={`${isEditing ? "flex-col" : "flex items-center justify-between gap-4"}`}>
             <div className="flex items-center gap-5">
               <div className="w-16 h-16 shrink-0 rounded-2xl bg-[#e5eeff] text-[#0058be] flex items-center justify-center font-bold text-xl border border-blue-100">
                 {initials}
@@ -401,7 +401,7 @@ export default function GuardianDetails() {
 
             <div className="shrink-0">
               {isEditing ? (
-                <div className="flex gap-2">
+                <div className="flex gap-2 mt-2 ml-[84px]">
                   <button
                     type="button"
                     onClick={() => setFormData(p => ({ ...p, is_archived: false }))}

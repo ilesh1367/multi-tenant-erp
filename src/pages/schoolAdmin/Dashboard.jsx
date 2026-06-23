@@ -388,11 +388,11 @@ export default function Dashboard() {
   useEffect(() => {
     (async () => {
       try {
-        const [classRes, sectionRes, studentsRes, teachersRes] = await Promise.all([
+        const [classRes, sectionRes, studentsRes, teachersRes,] = await Promise.all([
           api.get("academics/class-levels/"),
           api.get("academics/sections/"),
-          api.get("profiles/students/"),
-          api.get("profiles/teachers/"),
+          api.get("school-admin/students/"),
+          api.get("school-admin/teachers/"),
         ]);
 
         setClassLevels(classRes.data?.results ?? (Array.isArray(classRes.data) ? classRes.data : []));
@@ -402,7 +402,7 @@ export default function Dashboard() {
         setStudentsCount(totalStu);
 
         try {
-          const activeRes = await api.get("profiles/students/?is_archived=false&page_size=1");
+          const activeRes = await api.get("school-admin/students/?is_archived=false&page_size=1");
           setActiveStudents(activeRes.data?.count ?? activeRes.data?.results?.length ?? totalStu);
         } catch {
           const stuArr = studentsRes.data?.results ?? (Array.isArray(studentsRes.data) ? studentsRes.data : []);

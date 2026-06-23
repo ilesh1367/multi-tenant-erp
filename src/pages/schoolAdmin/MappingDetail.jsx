@@ -198,7 +198,7 @@ export default function MappingDetail() {
               onClick={() => navigate("/school-admin/mapping")}
               className="mt-4 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold"
             >
-              Back to Directory
+              Back
             </button>
           </div>
         </div>
@@ -280,7 +280,7 @@ export default function MappingDetail() {
             className="text-primary font-medium flex items-center gap-1 hover:underline transition-all font-body"
           >
             <span className="material-symbols-outlined text-sm">arrow_back</span>
-            Back to Directory
+            Back
           </button>
 
           <div className="flex gap-2">

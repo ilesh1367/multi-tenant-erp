@@ -210,7 +210,7 @@ export default function StudentDetails() {
   if (loading) {
     return (
       <SchoolLayout>
-        <div className="flex flex-col gap-4 px-4 md:px-8 pt-4 pb-12 max-w-4xl animate-pulse">
+        <div className="flex flex-col gap-4 px-4 md:px-8 pt-4 pb-12 animate-pulse">
           <div className="flex justify-between items-center">
             <Skeleton style={{ width: 140, height: 20 }} />
             <div className="flex gap-2"><Skeleton style={{ width: 80, height: 36 }} /><Skeleton style={{ width: 80, height: 36 }} /></div>
@@ -218,7 +218,7 @@ export default function StudentDetails() {
           <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/10 p-6">
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <Skeleton style={{ width: 64, height: 64, borderRadius: 16 }} className="shrink-0" />
-              <div className="flex-1 w-full"><Skeleton style={{ width: 180, height: 24 }} /><Skeleton style={{ width: 140, height: 14, marginTop: 6 }} /></div>
+              <div className="flex flex-col md:items-start items-center w-full"><Skeleton style={{ width: 180, height: 24 }} /><Skeleton style={{ width: 140, height: 14, marginTop: 6 }} /></div>
             </div>
           </div>
           <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/10 p-6 flex flex-col gap-4">
@@ -236,7 +236,7 @@ export default function StudentDetails() {
           <span className="material-symbols-outlined text-5xl text-error mb-4">error</span>
           <p className="text-on-surface-variant font-medium">{error || "Student not found."}</p>
           <button onClick={() => navigate("/school-admin/students")} className="mt-4 bg-primary text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm">
-            Back to Directory
+            Back
           </button>
         </div>
       </SchoolLayout>
@@ -256,7 +256,7 @@ export default function StudentDetails() {
 
   return (
     <SchoolLayout>
-      <div className="flex flex-col gap-4 px-4 md:px-8 pt-4 pb-12 max-w-4xl mx-auto w-full">
+      <div className="flex flex-col gap-4 px-4 md:px-8 pt-4 pb-12 mx-auto w-full">
 
         {/* Global Action Notifications Toast */}
         {toast && (
@@ -299,29 +299,29 @@ export default function StudentDetails() {
         )}
 
         {/* Context Back navigation strip controller */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <button onClick={() => navigate("/school-admin/students")} className="flex items-center gap-1.5 text-primary text-xs md:text-sm font-bold hover:underline">
-            <span className="material-symbols-outlined text-base">arrow_back</span> Back to Directory
+        <div className="flex flex-wrap justify-between items-center gap-3">
+          <button onClick={() => navigate("/school-admin/students")} className="flex items-center gap-1.5 text-primary text-xs md:text-sm font-semibold hover:underline">
+            <span className="material-symbols-outlined text-[18px]">arrow_back</span> Back
           </button>
-          <div className="flex gap-2 w-full sm:w-auto justify-end">
+          <div className="flex gap-2">
             {!isEditing ? (
               <>
-                <button onClick={() => setShowDeleteModal(true)} className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 bg-error/10 text-error text-xs md:text-sm font-bold rounded-lg hover:bg-error/20 transition">
+                <button onClick={() => setShowDeleteModal(true)} className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 text-sm font-bold rounded-md hover:bg-red-100 transition-colors">
                   <span className="material-symbols-outlined text-base">delete</span> Delete
                 </button>
-                <button onClick={() => setIsEditing(true)} className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-2 bg-secondary/10 text-secondary text-xs md:text-sm font-bold rounded-lg hover:bg-secondary/20 transition">
+                <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 px-4 py-2 bg-[#f4ebff] text-[#6b38d4] text-sm font-bold rounded-md hover:bg-[#ead9ff] transition-colors">
                   <span className="material-symbols-outlined text-base">edit</span> Edit Profile
                 </button>
               </>
             ) : (
-              <>
-                <button onClick={() => { setIsEditing(false); fetchAll(); }} className="px-4 py-2 text-xs md:text-sm text-on-surface-variant font-bold hover:bg-surface-container-high rounded-lg transition">
+              <div className="flex gap-2">
+                <button onClick={() => { setIsEditing(false); fetchAll(); }} className="px-4 py-2 text-sm text-gray-500 font-bold hover:bg-gray-100 rounded-md">
                   Cancel
                 </button>
-                <button onClick={handleSave} disabled={isSaving} className="flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-xs md:text-sm font-bold rounded-lg shadow-sm disabled:opacity-60 transition">
+                <button onClick={handleSave} disabled={isSaving} className="flex items-center gap-2 px-4 py-2 bg-[#6b38d4] text-white text-sm font-bold rounded-md shadow-sm disabled:opacity-70">
                   {isSaving ? "Saving..." : "Save Changes"}
                 </button>
-              </>
+              </div>
             )}
           </div>
         </div>
