@@ -44,17 +44,19 @@ function Skeleton({ style = {} }) {
 // ─────────────────────────────────────────────
 // Full-page skeleton (mirrors exact page layout)
 // ─────────────────────────────────────────────
-function PageSkeleton() {
+function PageSkeleton({editMode}) {
+  const isEditMode = editMode;
+
   return (
     <div className="px-4 md:px-8 pt-4 pb-12 space-y-6">
 
       {/* Top bar */}
       <div className="flex flex-wrap justify-between items-center gap-3">
-        <Skeleton style={{ width: 160, height: 18 }} />
+        <Skeleton style={{ width: 50, height: 18 }} />
         <div className="flex gap-2">
           <Skeleton style={{ width: 80, height: 36, borderRadius: 8 }} />
-          <Skeleton style={{ width: 110, height: 36, borderRadius: 8 }} />
-          <Skeleton style={{ width: 110, height: 36, borderRadius: 8 }} />
+          {isEditMode && <Skeleton style={{ width: 80, height: 36, borderRadius: 8 }} />}
+          <Skeleton style={{ width: 80, height: 36, borderRadius: 8 }} />
         </div>
       </div>
 
@@ -246,7 +248,7 @@ export default function CreateAcademicYear() {
     return (
       <SchoolLayout title="Academic Years">
         <InjectShimmer />
-        <PageSkeleton />
+        <PageSkeleton editMode={isEditMode}/>
       </SchoolLayout>
     );
   }
@@ -329,7 +331,7 @@ export default function CreateAcademicYear() {
               className="flex items-center gap-1.5 text-[#0058be] text-sm font-semibold hover:underline"
             >
               <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-              Back to Directory
+              Back
             </button>
 
             <div className="flex gap-2">
@@ -337,7 +339,7 @@ export default function CreateAcademicYear() {
                 <button
                   type="button"
                   onClick={() => setShowDeleteModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 text-sm font-bold rounded-md hover:bg-red-100 transition-colors"
+                  className="flex items-center gap-2 md:px-4 px-2 py-2 bg-red-50 text-red-600 text-sm font-bold rounded-md hover:bg-red-100 transition-colors"
                 >
                   <span className="material-symbols-outlined text-[16px]">delete</span>
                   Delete
@@ -346,14 +348,14 @@ export default function CreateAcademicYear() {
               <button
                 type="button"
                 onClick={() => navigate("/school-admin/academic-years")}
-                className="px-4 py-2 text-sm text-gray-500 font-bold hover:bg-gray-100 rounded-md"
+                className="md:px-4 px-2 py-2 text-sm text-gray-500 font-bold hover:bg-gray-100 rounded-md"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center gap-2 px-4 py-2 bg-[#0058be] text-white text-sm font-bold rounded-md shadow-sm disabled:opacity-70"
+                className="flex items-center gap-2 md:px-4 px-2 py-2 bg-[#0058be] text-white text-sm font-bold rounded-md shadow-sm disabled:opacity-70"
               >
                 {loading && (
                   <span className="material-symbols-outlined animate-spin text-[16px]">

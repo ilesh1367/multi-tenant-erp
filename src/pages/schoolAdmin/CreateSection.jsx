@@ -19,44 +19,39 @@ function Sk({ w, h, r = 6, style = {} }) {
   return <div style={{ width: w, height: h, borderRadius: r, flexShrink: 0, ...SHIMMER, ...style }} />;
 }
 
-// ── Full‑page Skeleton ──
+// ── Full‑page Responsive Skeleton ──
 function CreateSectionSkeleton() {
   return (
     <SchoolLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-4 md:py-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/10 p-6 sm:p-8">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex items-center gap-3">
+      <div className="px-4 sm:px-6 md:px-8 py-4 md:py-6 w-full">
+        <div className="max-w-2xl mx-auto w-full">
+          <div className="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/10 p-4 sm:p-6 md:p-8">
+            {/* Header Skeleton */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Sk w={28} h={28} r={8} />
-                <div>
+                <div className="w-full">
                   <Sk w={160} h={24} />
-                  <Sk w={220} h={16} style={{ marginTop: 4 }} />
+                  <Sk w="85%" h={16} style={{ marginTop: 4, maxWidth: "220px" }} />
                 </div>
               </div>
-              <Sk w={80} h={32} r={6} />
+              <Sk w={80} h={32} r={6} className="w-full sm:w-auto" />
             </div>
 
-            {/* Form fields */}
+            {/* Form fields Skeleton */}
             <div className="space-y-5">
-              {/* Parent Class Level */}
               <div>
                 <Sk w={140} h={12} r={4} style={{ marginBottom: 6 }} />
                 <Sk w="100%" h={44} r={8} />
               </div>
-
-              {/* Section Identifier */}
               <div>
                 <Sk w={140} h={12} r={4} style={{ marginBottom: 6 }} />
                 <Sk w="100%" h={44} r={8} />
-                <Sk w={300} h={12} r={4} style={{ marginTop: 8 }} />
+                <Sk w="90%" h={12} r={4} style={{ marginTop: 8, maxWidth: "300px" }} />
               </div>
-
-              {/* Actions */}
-              <div className="flex justify-end gap-3 pt-2">
-                <Sk w={80} h={40} r={8} />
-                <Sk w={140} h={40} r={8} />
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
+                <Sk w="100%" h={40} r={8} className="sm:w-20" />
+                <Sk w="100%" h={40} r={8} className="sm:w-36" />
               </div>
             </div>
           </div>
@@ -126,21 +121,20 @@ export default function CreateSection() {
     }
   };
 
-  // ── Skeleton ──
   if (loadingLevels) {
     return <CreateSectionSkeleton />;
   }
 
-  // ── Render ──
   return (
     <SchoolLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-4 md:py-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/10 p-6 sm:p-8">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-secondary text-2xl">groups</span>
+      <div className="px-4 sm:px-6 md:px-8 py-4 md:py-6 w-full">
+        <div className="max-w-3xl mx-auto w-full">
+          <div className="bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/10 p-4 sm:p-6 md:p-8">
+            
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+              <div className="flex items-start gap-3">
+                <span className="material-symbols-outlined text-secondary text-2xl shrink-0 mt-0.5">groups</span>
                 <div>
                   <h2 className="text-xl font-headline font-bold text-on-surface">
                     Define New Section
@@ -152,24 +146,24 @@ export default function CreateSection() {
               </div>
               <button
                 onClick={() => navigate(-1)}
-                className="flex items-center gap-1 text-sm text-on-surface-variant hover:text-primary transition-colors font-body border border-outline-variant/30 rounded px-3 py-1.5"
+                className="flex items-center justify-center gap-1 text-sm text-on-surface-variant hover:text-primary transition-colors font-body border border-outline-variant/30 rounded px-3 py-1.5 shrink-0 ml-[35px]"
               >
                 <span className="material-symbols-outlined text-base">arrow_back</span>
                 Go Back
               </button>
             </div>
 
-            {/* Error */}
+            {/* Error Pane */}
             {error && (
               <div className="mb-4 px-4 py-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm font-body flex items-center gap-2">
-                <span className="material-symbols-outlined text-base">error</span>
-                {error}
+                <span className="material-symbols-outlined text-base shrink-0">error</span>
+                <span>{error}</span>
               </div>
             )}
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Parent Class Level */}
+              {/* Parent Class Level Selection */}
               <div>
                 <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 font-body">
                   Parent Class Level <span className="text-error">*</span>
@@ -182,7 +176,7 @@ export default function CreateSection() {
                     value={classLevelId}
                     onChange={(e) => setClassLevelId(e.target.value)}
                     disabled={loadingLevels}
-                    className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-outline-variant/30 bg-surface-container text-on-surface text-sm font-body focus:outline-none focus:ring-2 focus:ring-secondary/40 focus:border-secondary transition appearance-none disabled:opacity-60"
+                    className="w-full pl-9 pr-10 py-2.5 rounded-lg border border-outline-variant/30 bg-surface-container text-on-surface text-sm font-body focus:outline-none focus:ring-2 focus:ring-secondary/40 focus:border-secondary transition appearance-none disabled:opacity-60"
                   >
                     <option value="">
                       {loadingLevels ? "Loading..." : "Select Base Class Level..."}
@@ -199,7 +193,7 @@ export default function CreateSection() {
                 </div>
               </div>
 
-              {/* Section Identifier */}
+              {/* Section Identifier Input */}
               <div>
                 <label className="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5 font-body">
                   Section Identifier <span className="text-error">*</span>
@@ -211,7 +205,7 @@ export default function CreateSection() {
                   placeholder="e.g., Section A, Batch Alpha, Honors"
                   className="w-full px-4 py-2.5 rounded-lg border border-outline-variant/30 bg-surface-container text-on-surface placeholder:text-outline text-sm font-body focus:outline-none focus:ring-2 focus:ring-secondary/40 focus:border-secondary transition"
                 />
-                <p className="text-xs text-on-surface-variant mt-1.5 font-body">
+                <p className="text-xs text-on-surface-variant mt-1.5 font-body break-words">
                   Combined together, this will read as "
                   <span className="font-semibold text-on-surface">
                     {selectedLevel?.name || "[Class Level]"}
@@ -224,19 +218,19 @@ export default function CreateSection() {
                 </p>
               </div>
 
-              {/* Actions */}
-              <div className="flex justify-end gap-3 pt-2">
+              {/* Action Buttons */}
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => navigate(-1)}
-                  className="px-5 py-2 text-sm font-semibold text-on-surface-variant hover:bg-surface-container-high rounded-lg transition font-body"
+                  className="w-full sm:w-auto px-5 py-2.5 text-sm font-semibold text-on-surface-variant hover:bg-surface-container-high rounded-lg transition font-body text-center"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting || loadingLevels}
-                  className="flex items-center gap-2 px-5 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition font-body disabled:opacity-60"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition font-body disabled:opacity-60"
                 >
                   <span className="material-symbols-outlined text-base">add_circle</span>
                   {submitting ? "Creating..." : "Create Section"}

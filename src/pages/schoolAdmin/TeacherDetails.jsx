@@ -26,8 +26,11 @@ function TeacherDetailsSkeleton() {
     <div className="px-4 md:px-8 py-6 space-y-6">
       {/* Top Bar */}
       <div className="flex justify-between items-center">
-        <Skeleton style={{ width: 140, height: 20 }} />
-        <Skeleton style={{ width: 100, height: 36, borderRadius: 8 }} />
+        <Skeleton style={{ width: 50, height: 20 }} />
+        <div className="flex gap-2">
+          <Skeleton style={{ width: 100, height: 36, borderRadius: 8 }} />
+          <Skeleton style={{ width: 100, height: 36, borderRadius: 8 }} />
+        </div>
       </div>
 
       {/* Identity Header */}
@@ -35,8 +38,8 @@ function TeacherDetailsSkeleton() {
         <div className="flex items-center gap-5">
           <Skeleton style={{ width: 64, height: 64, borderRadius: 16 }} />
           <div className="flex-1">
-            <Skeleton style={{ width: 200, height: 24 }} />
-            <Skeleton style={{ width: 150, height: 14, marginTop: 4 }} />
+            <Skeleton style={{ width: 150, height: 24 }} />
+            <Skeleton style={{ width: 100, height: 14, marginTop: 4 }} />
           </div>
           <Skeleton style={{ width: 100, height: 36, borderRadius: 8 }} />
         </div>
@@ -235,7 +238,7 @@ export default function TeacherDetails() {
               onClick={() => navigate("/school-admin/teachers")}
               className="mt-4 px-4 py-2 bg-[#6b38d4] text-white rounded-lg text-sm font-bold"
             >
-              Back to Directory
+              Back
             </button>
           </div>
         </div>
@@ -319,7 +322,7 @@ export default function TeacherDetails() {
             onClick={() => navigate("/school-admin/teachers")}
             className="flex items-center gap-1.5 text-[#0058be] text-sm font-semibold hover:underline"
           >
-            <span className="material-symbols-outlined text-[18px]">arrow_back</span> Back to Directory
+            <span className="material-symbols-outlined text-[18px]">arrow_back</span> Back
           </button>
 
           <div className="flex gap-2">
@@ -361,7 +364,7 @@ export default function TeacherDetails() {
 
         {/* Identity Header Card */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center justify-between gap-4">
+          <div className={`${isEditing ? "flex-col" : "flex items-center justify-between gap-4"}`}>
             <div className="flex items-center gap-5">
               <div className="w-16 h-16 shrink-0 rounded-2xl bg-[#f4ebff] text-[#6b38d4] flex items-center justify-center font-bold text-xl border border-[#e9ddff]">
                 {initials}
@@ -403,7 +406,7 @@ export default function TeacherDetails() {
             {/* Status badge / toggle */}
             <div className="shrink-0">
               {isEditing ? (
-                <div className="flex gap-2">
+                <div className="flex gap-2 mt-2 ml-[84px]">
                   <button
                     type="button"
                     onClick={() => setFormData(p => ({ ...p, is_archived: false }))}

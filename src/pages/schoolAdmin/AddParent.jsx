@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SchoolLayout from "../../components/erp/school/SchoolLayout";
 import api from "../../services/axiosClient";
+import { schoolAdminApi } from "../../services/schoolAdminApi";
 
 /* ─────────────────────────────────────────────
    Skeleton Shimmer Style Injection
@@ -28,11 +29,11 @@ function AddParentSkeleton() {
   return (
     <SchoolLayout>
       <div className="px-4 md:px-8 pt-4 pb-12 space-y-6 animate-pulse">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <Sk w={140} h={20} />
-          <div className="flex gap-2 w-full sm:w-auto">
-            <Sk h={36} className="flex-1 sm:w-20" />
-            <Sk h={36} className="flex-1 sm:w-32" />
+        <div className="flex justify-between items-center gap-3">
+          <Sk w={50} h={20} />
+          <div className="flex gap-2">
+            <Sk w={100} h={36}/>
+            <Sk w={120} h={36}/>
           </div>
         </div>
 
@@ -128,22 +129,18 @@ export default function AddParent() {
     setError(null);
 
     try {
-      const userResponse = await api.post(`/users/`, {
-        email,
-        password,
-        first_name: firstName,
-        last_name: lastName,
-      });
-      const userData = userResponse.data;
+      const parentPayload = {
+      email,
+      password,
+      first_name: firstName,
+      last_name: lastName,
+      phone_number: phoneNumber,
+      ...(emergencyContact && { emergency_contact_number: emergencyContact }),
+      ...(occupation && { occupation }),
+    };
 
-      if (userData.id) {
-        await api.post(`/profiles/parents/`, {
-          user: userData.id,
-          phone_number: phoneNumber,
-          emergency_contact_number: emergencyContact,
-          occupation,
-        });
-      }
+    // Send the unified single payload directly to the parents profile endpoint
+    await schoolAdminApi.createParentProfile(parentPayload);
 
       showToast("Guardian onboarded successfully!");
       setTimeout(() => navigate("/school-admin/parents"), 1000);
@@ -193,14 +190,14 @@ export default function AddParent() {
           )}
 
           {/* ── Top Bar Action Navigation Strip ── */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex justify-between items-center gap-4">
             <button
               type="button"
               onClick={() => navigate("/school-admin/parents")}
               className="flex items-center gap-1.5 text-primary text-xs md:text-sm font-bold hover:underline"
             >
               <span className="material-symbols-outlined text-base">arrow_back</span>
-              Back to Directory
+              Back
             </button>
 
             <div className="flex gap-2 w-full sm:w-auto justify-end">

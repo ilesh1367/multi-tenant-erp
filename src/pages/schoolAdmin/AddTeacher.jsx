@@ -28,9 +28,9 @@ function AddTeacherSkeleton() {
   return (
     <SchoolLayout>
       <div className="px-4 md:px-8 pt-4 pb-12 space-y-6 animate-pulse">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div className="flex justify-between items-center gap-3">
           <Sk w={140} h={20} />
-          <div className="flex gap-2 w-full sm:w-auto"><Sk h={36} className="flex-1 sm:w-20" /><Sk h={36} className="flex-1 sm:w-28" /></div>
+          <div className="flex"><Sk w={120} h={36} className="flex-1 sm:w-20" /><Sk w={120} h={36} className="flex-1 sm:w-28" /></div>
         </div>
 
         <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/10 p-4 md:p-6">
@@ -120,46 +120,44 @@ export default function AddTeacher() {
 
   // ── Submit ──
   const handleSave = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+  e.preventDefault();
+  setLoading(true);
+  setError(null);
 
-    try {
-      const userData = await schoolAdminApi.createUser({
-        email,
-        password,
-        first_name: firstName,
-        last_name: lastName,
-      });
+  try {
+    const teacherPayload = {
+      email,
+      password,
+      first_name: firstName,
+      last_name: lastName,
+      employee_id: employeeId,
+      ...(qualification && { qualification }),
+      ...(phoneNumber && { phone_number: phoneNumber }),
+      ...(joiningDate && { joining_date: joiningDate }),
+    };
 
-      if (userData.id) {
-        const profilePayload = { user: userData.id, employee_id: employeeId };
-        if (qualification) profilePayload.qualification = qualification;
-        if (phoneNumber) profilePayload.phone_number = phoneNumber;
-        if (joiningDate) profilePayload.joining_date = joiningDate;
+    // Send the single payload directly to the teacher endpoint
+    await schoolAdminApi.createTeacherProfile(teacherPayload);
 
-        await schoolAdminApi.createTeacherProfile(profilePayload);
-      }
-
-      showToast("Faculty onboarded successfully!");
-      setTimeout(() => navigate(fromQuickAdd ? "/school-admin" : "/school-admin/teachers"), 1000);
-    } catch (err) {
-      console.error(err);
-      if (err.response?.data) {
-        const data = err.response.data;
-        if (typeof data === "string" && data.includes("<!DOCTYPE")) {
-          setError("Server error (500). Verify connection setup.");
-        } else {
-          setError(Object.entries(data).map(([f, v]) => `${f}: ${Array.isArray(v) ? v.join(" ") : v}`).join(" | "));
-        }
+    showToast("Faculty onboarded successfully!");
+    setTimeout(() => navigate(fromQuickAdd ? "/school-admin" : "/school-admin/teachers"), 1000);
+  } catch (err) {
+    console.error(err);
+    if (err.response?.data) {
+      const data = err.response.data;
+      if (typeof data === "string" && data.includes("<!DOCTYPE")) {
+        setError("Server error (500). Verify connection setup.");
       } else {
-        setError(err.message);
+        setError(Object.entries(data).map(([f, v]) => `${f}: ${Array.isArray(v) ? v.join(" ") : v}`).join(" | "));
       }
-      window.scrollTo(0, 0);
-    } finally {
-      setLoading(false);
+    } else {
+      setError(err.message);
     }
-  };
+    window.scrollTo(0, 0);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const initials = firstName && lastName 
     ? `${firstName[0]}${lastName[0]}`.toUpperCase() 
@@ -186,14 +184,14 @@ export default function AddTeacher() {
           )}
 
           {/* ── Top Bar Action Navigation Strip ── */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex justify-between items-center gap-4">
             <button
               type="button"
               onClick={() => navigate(fromQuickAdd ? "/school-admin" : "/school-admin/teachers")}
               className="flex items-center gap-1.5 text-primary text-xs md:text-sm font-bold hover:underline"
             >
               <span className="material-symbols-outlined text-base">arrow_back</span>
-              {fromQuickAdd ? "Back to Dashboard" : "Back to Directory"}
+              Back
             </button>
 
             <div className="flex gap-2 w-full sm:w-auto justify-end">

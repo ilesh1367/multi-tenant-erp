@@ -119,7 +119,7 @@ export default function AssignTeacher() {
     const fetchDropdownData = async () => {
       try {
         const [teacherRes, yearRes, classRes, sectionRes, subjectRes] = await Promise.all([
-          api.get(`profiles/teachers/`),
+          api.get(`school-admin/teachers/`),
           api.get(`academics/academic-years/`),
           api.get(`academics/class-levels/`),
           api.get(`academics/sections/`),
@@ -198,7 +198,7 @@ export default function AssignTeacher() {
   return (
     <SchoolLayout title="Teacher Assignment">
       <div className="px-4 sm:px-6 py-6 md:py-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div className="flex justify-between items-center gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-headline font-extrabold text-on-surface tracking-tight">
               Assign Teacher to Class

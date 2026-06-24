@@ -169,9 +169,9 @@ export default function CreateRole() {
   if (initialLoad) {
     return (
       <SchoolLayout title="Roles & Permissions">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-8">
+        <div className="px-4 sm:px-6 md:px-8 py-6 md:py-8">
           <div className="flex flex-col gap-6">
-            <div className="flex justify-between items-start">
+            <div className="flex md:flex-row flex-col gap-3 justify-between items-start">
               <div>
                 <Skeleton style={{ width: 240, height: 28 }} />
                 <Skeleton style={{ width: 320, height: 16, marginTop: 4 }} />
@@ -224,7 +224,7 @@ export default function CreateRole() {
   // ── Main Render ──
   return (
     <SchoolLayout title="Roles & Permissions">
-      <div className="px-4 sm:px-6 md:px-8 py-6 md:py-8 max-w-6xl mx-auto">
+      <div className="px-4 sm:px-6 md:px-8 py-6 md:py-8">
 
         {/* Toast Notification */}
         {toast && (

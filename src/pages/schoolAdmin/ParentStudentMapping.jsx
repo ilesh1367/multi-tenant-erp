@@ -25,7 +25,7 @@ function Skeleton({ className = "", style = {} }) {
 // ─────────────────────────────────────────────
 function MappingSkeleton() {
   return (
-    <div className="flex flex-col gap-4 px-4 md:px-8 pt-4 pb-12 max-w-7xl animate-pulse">
+    <div className="flex flex-col gap-4 px-4 md:px-8 pt-4 pb-12 animate-pulse">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
@@ -241,7 +241,7 @@ export default function ParentStudentMapping() {
   // ── Main render ──
   return (
     <SchoolLayout>
-      <div className="flex flex-col gap-4 px-4 md:px-8 pt-4 pb-12 max-w-7xl">
+      <div className="flex flex-col gap-4 px-4 md:px-8 pt-4 pb-12">
 
         {/* Responsive Header Block */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
@@ -319,8 +319,8 @@ export default function ParentStudentMapping() {
                 ) : (
                   paginatedMappings.map((m, index) => {
                     const isVerified = m.is_verified !== false;
-                    const parentName = m.parent_name || "Unknown Parent";
-                    const studentName = m.student_name || "Unknown Student";
+                    const parentName = m.parent_first_name + " " + m.parent_last_name || "Unknown Parent";
+                    const studentName = m.student_first_name + " " + m.student_last_name || "Unknown Student";
                     const relationship = m.relationship || "Guardian";
                     const isPrimary = m.is_primary_contact || false;
                     const canViewAcademics = m.can_view_academics || false;
