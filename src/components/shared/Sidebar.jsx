@@ -5,21 +5,21 @@ import { useStudent } from '../../context/StudentProvider';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const navItems = [
-  { icon: 'dashboard',              label: 'Dashboard',            path: '/student'                  },
-  { icon: 'menu_book',              label: 'My Subjects',          path: '/student/subjects'         },
-  { icon: 'assignment',             label: 'Assignments',          path: '/student/assignments'      },
-  { icon: 'description',            label: 'Grades & Report Card', path: '/student/grades'           },
-  { icon: 'event_available',        label: 'Attendance',           path: '/student/attendance'       },
-  { icon: 'calendar_month',         label: 'Timetable',            path: '/student/timetable'        },
-  { icon: 'psychology',             label: 'AI Tutor',             path: '/student/ai-tutor'         },
-  { icon: 'gavel',                  label: 'Grievance',            path: '/student/grievance'        },
-  { icon: 'campaign',               label: 'Circulars',            path: '/student/circulars'        },
-  { icon: 'account_balance_wallet', label: 'Fees',                 path: '/student/fees'             },
-  { icon: 'support_agent',          label: 'Help Desk',            path: '/student/help'             },
+  { icon: 'dashboard', label: 'Dashboard', path: '/student' },
+  { icon: 'menu_book', label: 'My Subjects', path: '/student/subjects' },
+  { icon: 'assignment', label: 'Assignments', path: '/student/assignments' },
+  { icon: 'description', label: 'Grades & Report Card', path: '/student/grades' },
+  { icon: 'event_available', label: 'Attendance', path: '/student/attendance' },
+  { icon: 'calendar_month', label: 'Timetable', path: '/student/timetable' },
+  { icon: 'psychology', label: 'AI Tutor', path: '/student/ai-tutor' },
+  { icon: 'gavel', label: 'Grievance', path: '/student/grievance' },
+  { icon: 'campaign', label: 'Circulars', path: '/student/circulars' },
+  { icon: 'account_balance_wallet', label: 'Fees', path: '/student/fees' },
+  { icon: 'support_agent', label: 'Help Desk', path: '/student/help' },
 ];
 
 const bottomItems = [
-  { to: '/student/profile',  icon: 'person',   label: 'Profile'  },
+  { to: '/student/profile', icon: 'person', label: 'Profile' },
   { to: '/student/settings', icon: 'settings', label: 'Settings' },
 ];
 
@@ -27,9 +27,13 @@ export default function Sidebar() {
   const { profile: student, enrollment: enroll } = useStudent();
   const navigate = useNavigate();
 
-  const [isExpanded, setIsExpanded] = useState(true);
-  const [isMobile, setIsMobile]     = useState(false);
-  const [avatarUrl, setAvatarUrl]   = useState(null);
+  // ── Load sidebar state from localStorage (persist across re-renders) ──
+  const [isExpanded, setIsExpanded] = useState(() => {
+    const stored = localStorage.getItem('student_sidebar_expanded');
+    return stored !== null ? stored === 'true' : true;
+  });
+  const [isMobile, setIsMobile] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(null);
 
   const { first_name = '', last_name = '', enrollment_number = '' } = student || {};
   const { class_level_name = '', section_name = '' } = enroll || {};
@@ -56,20 +60,24 @@ export default function Sidebar() {
       .catch(() => setAvatarUrl(null));
   }, [student?.profile_picture]);
 
-  // ── Responsive sidebar ───────────────────────────────────────────────────
+  // ── Responsive sidebar ──
   useEffect(() => {
     const check = () => {
       const mobile = window.innerWidth < 1280;
       setIsMobile(mobile);
       if (mobile) {
+        // On mobile, always collapse
         setIsExpanded(false);
         window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { expanded: false } }));
+      } else {
+        // On desktop, restore saved state (or default to true)
+        const stored = localStorage.getItem('student_sidebar_expanded');
+        const expanded = stored !== null ? stored === 'true' : true;
+        setIsExpanded(expanded);
+        window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { expanded } }));
       }
     };
     check();
-    if (window.innerWidth >= 1280) {
-      window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { expanded: true } }));
-    }
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
@@ -77,6 +85,8 @@ export default function Sidebar() {
   const toggle = () => {
     setIsExpanded(prev => {
       const next = !prev;
+      // Save to localStorage so it persists
+      localStorage.setItem('student_sidebar_expanded', String(next));
       window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { expanded: next } }));
       return next;
     });
@@ -85,6 +95,8 @@ export default function Sidebar() {
   const close = () => {
     if (isMobile) {
       setIsExpanded(false);
+      // Save the collapsed state
+      localStorage.setItem('student_sidebar_expanded', 'false');
       window.dispatchEvent(new CustomEvent('sidebar-toggle', { detail: { expanded: false } }));
     }
   };
@@ -101,9 +113,9 @@ export default function Sidebar() {
      text-sm font-semibold sidebar-nav-item
      ${isExpanded ? 'gap-3 px-2' : 'justify-center px-2'}
      ${isActive
-       ? 'text-primary bg-surface-container-lowest shadow-sm'
-       : 'text-on-surface-variant hover:text-primary hover:bg-surface-container/60'
-     }`;
+      ? 'text-primary bg-surface-container-lowest shadow-sm'
+      : 'text-on-surface-variant hover:text-primary hover:bg-surface-container/60'
+    }`;
 
   return (
     <>

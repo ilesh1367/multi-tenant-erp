@@ -116,6 +116,7 @@ import AllInsightsRecommendations from "../pages/parent/AllInsightsRecommendatio
 import ParentPortalSettings from "../pages/parent/ParentPortalSettings";
 import ParentGrievance from "../pages/parent/ParentGrievance";
 import ParentCirculars from "../pages/parent/ParentCirculars";
+import TrackStudent from "../pages/parent/TrackStudent";
 
 /* Redirect logged-in users to their dashboard when visiting "/" */
 function RootRedirect() {
@@ -419,6 +420,7 @@ function AppRoutes() {
         <Route path="/parent/settings" element={<ParentProvider><ParentPortalSettings /></ParentProvider>} />
         <Route path="/parent/grievance" element={<ParentProvider><ParentGrievance /></ParentProvider>} />
         <Route path="/parent/circulars" element={<ParentProvider><ParentCirculars /></ParentProvider>} />
+        <Route path="/parent/track-student" element={<ParentProvider><TrackStudent /></ParentProvider>} />  {/* 👈 NEW */}
       </Routes>
     </BrowserRouter>
   );

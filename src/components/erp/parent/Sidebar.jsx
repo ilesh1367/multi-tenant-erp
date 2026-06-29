@@ -44,15 +44,16 @@ export default function Sidebar({ isExpanded, isMobile, onToggle, onClose }) {
   };
 
   const navItems = [
-    { to: "/parent",                end: true,  icon: "dashboard",      label: "Dashboard"       },
-    { to: "/parent/child-overview", end: false, icon: "child_care",     label: "Child Overview"  },
-    { to: "/parent/attendance",     end: false, icon: "calendar_today", label: "Attendance"      },
-    { to: "/parent/assignments",    end: false, icon: "assignment",     label: "Assignments"     },
-    { to: "/parent/grades",         end: false, icon: "assessment",     label: "Grades & Report" },
-    { to: "/parent/circulars",      end: false, icon: "campaign",       label: "Circulars"       }, // From main
-    { to: "/parent/ai-insights",    end: false, icon: "psychology",     label: "AI Insights"     }, // From main
-    { to: "/parent/grievance",      end: false, icon: "gavel",          label: "Grievance"       }, // From your branch
-];
+    { to: "/parent", end: true, icon: "dashboard", label: "Dashboard" },
+    { to: "/parent/child-overview", end: false, icon: "child_care", label: "Child Overview" },
+    { to: "/parent/attendance", end: false, icon: "calendar_today", label: "Attendance" },
+    { to: "/parent/assignments", end: false, icon: "assignment", label: "Assignments" },
+    { to: "/parent/grades", end: false, icon: "assessment", label: "Grades & Report" },
+    { to: "/parent/circulars", end: false, icon: "campaign", label: "Circulars" },
+    { to: "/parent/ai-insights", end: false, icon: "psychology", label: "AI Insights" },
+    { to: "/parent/grievance", end: false, icon: "gavel", label: "Grievance" },
+    { to: "/parent/track-student", end: false, icon: "location_on", label: "Track Student" }, // 👈 NEW
+  ];
 
   const navClass = ({ isActive }) =>
     `flex items-center rounded-xl transition-all duration-200 font-semibold text-sm flex-shrink-0
@@ -133,7 +134,7 @@ export default function Sidebar({ isExpanded, isMobile, onToggle, onClose }) {
           </div>
 
           {/* ── Nav ── */}
-          <nav className="flex flex-col flex-1 gap-0.5 overflow-hidden">
+          <nav className="flex flex-col flex-1 gap-0.5 overflow-y-auto overflow-x-hidden scrollbar-none">
             {navItems.map(({ to, end, icon, label }) => (
               <NavLink key={label} to={to} end={end} onClick={onClose} title={!isExpanded ? label : undefined} className={navClass}>
                 <span className="material-symbols-outlined flex-shrink-0 text-[20px]">{icon}</span>
