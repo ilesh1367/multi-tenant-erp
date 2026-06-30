@@ -50,6 +50,8 @@ import CreateClassSection from "../pages/schoolAdmin/CreateClassSection";
 import CreateSubject from '../pages/schoolAdmin/CreateSubject';
 import CreateSection from '../pages/schoolAdmin/CreateSection';
 import SchoolAdminNotifications from "../pages/schoolAdmin/Notifications";
+import GrievanceManagement from "../pages/schoolAdmin/GrievanceManagement";
+import CircularsPage from "../pages/schoolAdmin/Circulars";
 
 /* STUDENT */
 import StudentDashboard from "../pages/student/Dashboard";
@@ -215,6 +217,8 @@ function AppRoutes() {
           <Route path="create-subject" element={<CreateSubject />} />
           <Route path="create-section" element={<CreateSection />} />
           <Route path="class-levels" element={<ClassLevels />} />
+          <Route path="grievance" element={<GrievanceManagement />} />
+          <Route path="circulars" element={<CircularsPage />} />
         </Route>
 
         {/* ================= STUDENT ================= */}
