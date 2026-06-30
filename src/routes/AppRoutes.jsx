@@ -50,6 +50,7 @@ import CreateClassSection from "../pages/schoolAdmin/CreateClassSection";
 import CreateSubject from '../pages/schoolAdmin/CreateSubject';
 import CreateSection from '../pages/schoolAdmin/CreateSection';
 import SchoolAdminNotifications from "../pages/schoolAdmin/Notifications";
+import GrievanceManagement from "../pages/schoolAdmin/GrievanceManagement";
 import CircularsPage from "../pages/schoolAdmin/Circulars";
 
 /* STUDENT */
@@ -119,6 +120,10 @@ import ParentPortalSettings from "../pages/parent/ParentPortalSettings";
 import ParentGrievance from "../pages/parent/ParentGrievance";
 import ParentCirculars from "../pages/parent/ParentCirculars";
 import TrackStudent from "../pages/parent/TrackStudent";
+import ParentLeavePortal from "../pages/parent/ParentLeavePortal"; // 👈 NEW
+
+
+import ParentTimetable from '../pages/parent/ParentTimetable';
 
 /* Redirect logged-in users to their dashboard when visiting "/" */
 function RootRedirect() {
@@ -215,7 +220,6 @@ function AppRoutes() {
           <Route path="create-subject" element={<CreateSubject />} />
           <Route path="create-section" element={<CreateSection />} />
           <Route path="class-levels" element={<ClassLevels />} />
-          <Route path="circulars" element={<CircularsPage />} />
         </Route>
 
         {/* ================= STUDENT ================= */}
@@ -431,7 +435,7 @@ function AppRoutes() {
         <Route path="/parent/settings" element={<ParentProvider><ParentPortalSettings /></ParentProvider>} />
         <Route path="/parent/grievance" element={<ParentProvider><ParentGrievance /></ParentProvider>} />
         <Route path="/parent/circulars" element={<ParentProvider><ParentCirculars /></ParentProvider>} />
-        <Route path="/parent/track-student" element={<ParentProvider><TrackStudent /></ParentProvider>} />  {/* 👈 NEW */}
+        <Route path="/parent/timetable" element={<ParentProvider><ParentTimetable /></ParentProvider>} />
       </Routes>
     </BrowserRouter>
   );
