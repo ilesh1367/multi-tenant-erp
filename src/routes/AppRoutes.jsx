@@ -121,6 +121,9 @@ import ParentCirculars from "../pages/parent/ParentCirculars";
 import TrackStudent from "../pages/parent/TrackStudent";
 import ParentLeavePortal from "../pages/parent/ParentLeavePortal"; // 👈 NEW
 
+
+import ParentTimetable from '../pages/parent/ParentTimetable';
+
 /* Redirect logged-in users to their dashboard when visiting "/" */
 function RootRedirect() {
   const token = localStorage.getItem('access_token');
@@ -432,8 +435,7 @@ function AppRoutes() {
         <Route path="/parent/settings" element={<ParentProvider><ParentPortalSettings /></ParentProvider>} />
         <Route path="/parent/grievance" element={<ParentProvider><ParentGrievance /></ParentProvider>} />
         <Route path="/parent/circulars" element={<ParentProvider><ParentCirculars /></ParentProvider>} />
-        <Route path="/parent/track-student" element={<ParentProvider><TrackStudent /></ParentProvider>} />
-        <Route path="/parent/leave" element={<ParentProvider><ParentLeavePortal /></ParentProvider>} />  {/* 👈 NEW */}
+        <Route path="/parent/timetable" element={<ParentProvider><ParentTimetable /></ParentProvider>} />
       </Routes>
     </BrowserRouter>
   );
