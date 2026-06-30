@@ -11,6 +11,7 @@ import {
   switchActiveChild,
   getChildGrades,
   getChildAttendance,
+  getParentCirculars,
 } from "../services/parentAPIs";
 
 const ParentContext = createContext();
@@ -25,6 +26,9 @@ export const ParentProvider = ({ children: appChildren }) => {
   // Per-active-child data fetched separately
   const [attendanceData, setAttendanceData] = useState(null); // { summary, records[] }
   const [gradesData, setGradesData]         = useState(null); // { child, summary, exams[] }
+
+  // School-wide data (not child-specific)
+  const [circulars, setCirculars]           = useState([]);
 
   const [loading, setLoading]               = useState(true);
   const [childDataLoading, setChildDataLoading] = useState(false);
@@ -95,6 +99,7 @@ const MOCK_GRADES_DATA = {
         setParent(data.parent || null);
         setStudents(list);
         setLastUpdated(data.last_updated || null);
+        setCirculars(circularsList.status === "fulfilled" ? circularsList.value : []);
 
         const saved = localStorage.getItem(ACTIVE_CHILD_STORAGE_KEY);
         const savedStillValid = saved && list.some((c) => c.id === saved);
@@ -188,6 +193,15 @@ const MOCK_GRADES_DATA = {
     }
   }, []);
 
+  const refreshCirculars = useCallback(async () => {
+    try {
+      const list = await getParentCirculars();
+      setCirculars(list);
+    } catch (err) {
+      console.error("Failed to refresh circulars", err);
+    }
+  }, []);
+
   // ── Derived convenience values ──
   // activeChild.dashboard shape:
   //   { class_info{ class, section, academic_year, roll_number },
@@ -258,6 +272,10 @@ const MOCK_GRADES_DATA = {
         gradesSummary,
         gradesExams,        // array of exam objects with .subjects[]
         gradesFlat,         // flat array of subject grade rows
+
+        // ── Circulars (school-wide, not child-specific) ──
+        circulars,
+        refreshCirculars,
 
         // ── Loading / error ──
         loading,

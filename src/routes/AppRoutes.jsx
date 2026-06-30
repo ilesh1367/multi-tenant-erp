@@ -50,6 +50,7 @@ import CreateClassSection from "../pages/schoolAdmin/CreateClassSection";
 import CreateSubject from '../pages/schoolAdmin/CreateSubject';
 import CreateSection from '../pages/schoolAdmin/CreateSection';
 import SchoolAdminNotifications from "../pages/schoolAdmin/Notifications";
+import GrievanceManagement from "../pages/schoolAdmin/GrievanceManagement";
 
 /* STUDENT */
 import StudentDashboard from "../pages/student/Dashboard";
@@ -72,6 +73,7 @@ import GradesCard from "../pages/student/GradesCard";
 import StudentTimetable from '../pages/student/StudentTimetable';
 import Grievance from "../pages/student/Grievance";
 import Circulars from "../pages/student/Circulars";
+import LeavePortal from "../pages/student/LeavePortal";
 
 import { StudentProvider } from '../context/StudentProvider';
 
@@ -114,7 +116,10 @@ import GradesAssessmentHub from "../pages/parent/GradesAssessmentHub";
 import NotificationsHub from "../pages/parent/NotificationsHub";
 import AllInsightsRecommendations from "../pages/parent/AllInsightsRecommendations";
 import ParentPortalSettings from "../pages/parent/ParentPortalSettings";
+import ParentGrievance from "../pages/parent/ParentGrievance";
 import ParentCirculars from "../pages/parent/ParentCirculars";
+import TrackStudent from "../pages/parent/TrackStudent";
+import ParentLeavePortal from "../pages/parent/ParentLeavePortal"; // 👈 NEW
 
 
 import ParentTimetable from '../pages/parent/ParentTimetable';
@@ -214,6 +219,7 @@ function AppRoutes() {
           <Route path="create-subject" element={<CreateSubject />} />
           <Route path="create-section" element={<CreateSection />} />
           <Route path="class-levels" element={<ClassLevels />} />
+          <Route path="grievances" element={<GrievanceManagement />} />
         </Route>
 
         {/* ================= STUDENT ================= */}
@@ -363,6 +369,14 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/student/leave"
+          element={
+            <StudentProvider>
+              <LeavePortal />
+            </StudentProvider>
+          }
+        />
+        <Route
           path="/student/grievance"
           element={
             <StudentProvider>
@@ -419,6 +433,7 @@ function AppRoutes() {
         <Route path="/parent/ai-insights" element={<ParentProvider><AllInsightsRecommendations /></ParentProvider>} />
         <Route path="/parent/notifications" element={<ParentProvider><NotificationsHub /></ParentProvider>} />
         <Route path="/parent/settings" element={<ParentProvider><ParentPortalSettings /></ParentProvider>} />
+        <Route path="/parent/grievance" element={<ParentProvider><ParentGrievance /></ParentProvider>} />
         <Route path="/parent/circulars" element={<ParentProvider><ParentCirculars /></ParentProvider>} />
         <Route path="/parent/timetable" element={<ParentProvider><ParentTimetable /></ParentProvider>} />
       </Routes>
