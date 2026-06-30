@@ -52,6 +52,7 @@ import CreateSection from '../pages/schoolAdmin/CreateSection';
 import SchoolAdminNotifications from "../pages/schoolAdmin/Notifications";
 import LeaveDashboard from '../pages/schoolAdmin/LeaveDashboard';
 import GrievanceManagement from "../pages/schoolAdmin/GrievanceManagement";
+import CircularsPage from "../pages/schoolAdmin/Circulars";
 
 /* STUDENT */
 import StudentDashboard from "../pages/student/Dashboard";
@@ -221,7 +222,6 @@ function AppRoutes() {
           <Route path="create-section" element={<CreateSection />} />
           <Route path="class-levels" element={<ClassLevels />} />
           <Route path='leave-management' element={<LeaveDashboard />} />
-          <Route path="grievances" element={<GrievanceManagement />} />
         </Route>
 
         {/* ================= STUDENT ================= */}
