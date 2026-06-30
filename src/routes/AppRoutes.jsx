@@ -50,7 +50,6 @@ import CreateClassSection from "../pages/schoolAdmin/CreateClassSection";
 import CreateSubject from '../pages/schoolAdmin/CreateSubject';
 import CreateSection from '../pages/schoolAdmin/CreateSection';
 import SchoolAdminNotifications from "../pages/schoolAdmin/Notifications";
-import GrievanceManagement from "../pages/schoolAdmin/GrievanceManagement";
 
 /* STUDENT */
 import StudentDashboard from "../pages/student/Dashboard";
@@ -120,9 +119,6 @@ import ParentGrievance from "../pages/parent/ParentGrievance";
 import ParentCirculars from "../pages/parent/ParentCirculars";
 import TrackStudent from "../pages/parent/TrackStudent";
 import ParentLeavePortal from "../pages/parent/ParentLeavePortal"; // 👈 NEW
-
-
-import ParentTimetable from '../pages/parent/ParentTimetable';
 
 /* Redirect logged-in users to their dashboard when visiting "/" */
 function RootRedirect() {
@@ -219,7 +215,6 @@ function AppRoutes() {
           <Route path="create-subject" element={<CreateSubject />} />
           <Route path="create-section" element={<CreateSection />} />
           <Route path="class-levels" element={<ClassLevels />} />
-          <Route path="grievances" element={<GrievanceManagement />} />
         </Route>
 
         {/* ================= STUDENT ================= */}
@@ -435,7 +430,8 @@ function AppRoutes() {
         <Route path="/parent/settings" element={<ParentProvider><ParentPortalSettings /></ParentProvider>} />
         <Route path="/parent/grievance" element={<ParentProvider><ParentGrievance /></ParentProvider>} />
         <Route path="/parent/circulars" element={<ParentProvider><ParentCirculars /></ParentProvider>} />
-        <Route path="/parent/timetable" element={<ParentProvider><ParentTimetable /></ParentProvider>} />
+        <Route path="/parent/track-student" element={<ParentProvider><TrackStudent /></ParentProvider>} />
+        <Route path="/parent/leave" element={<ParentProvider><ParentLeavePortal /></ParentProvider>} />  {/* 👈 NEW */}
       </Routes>
     </BrowserRouter>
   );
