@@ -402,6 +402,18 @@ export const deleteLeaveRequest = async (id) => {
     return response.data
 }
 
+// Fetch teacher-subject assignments filtered by academic_year / subject / section / class_level.
+// Uses the school-admin endpoint (unlike getTeacherAssignments, which hits /academics/
+// and only supports teacher/status filters — not subject or academic_year).
+export const getTeacherAssignmentsForTimetable = async (params = {}) => {
+    const cleaned = Object.fromEntries(
+        Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== "")
+    );
+    const query = new URLSearchParams(cleaned);
+    const response = await apiClient.get(`/school-admin/teacher-assignments/?${query.toString()}`);
+    return response.data;
+};
+
 // --- Bundled Export ---
 export const schoolAdminApi = {
     getDashboardStats,
@@ -482,5 +494,6 @@ export const schoolAdminApi = {
     approveLeaveRequest,
     rejectLeaveRequest,
     cancelLeaveRequest,
-    deleteLeaveRequest
+    deleteLeaveRequest,
+    getTeacherAssignmentsForTimetable
 };
